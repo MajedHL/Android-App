@@ -1,0 +1,32 @@
+package fr.utt.if26.tasksorganizer.DAOs;
+
+import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.Query;
+import androidx.room.Update;
+
+import java.util.List;
+
+import fr.utt.if26.tasksorganizer.Entities.Task;
+import fr.utt.if26.tasksorganizer.Entities.User;
+
+@Dao
+public interface TasksDAO {
+    @Insert
+    public void insertTask(Task task);
+    @Update
+    public void updateTask(Task task);
+    @Delete
+    public void deleteTask(Task task);
+    @Query("SELECT * FROM Tasks ;")
+    public LiveData<List<Task>> getAllTasks();
+    @Query("Delete from Tasks;")
+    void deleteAllTasks();
+    @Query("SELECT * FROM Tasks WHERE STATUS = 1 ;")
+    public LiveData<List<Task>> getDoneTasks();
+
+    @Query("SELECT * FROM Tasks WHERE STATUS != 1 ;")
+    public LiveData<List<Task>> getUnDoneTasks();
+}

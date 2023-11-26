@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/mark_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Mark as completed" />
+    <item
+        android:id="@+id/mark_undone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Mark as not completed" />
+    <item
+        android:id="@+id/delete_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="delete" />
+</menu>

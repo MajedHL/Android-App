@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Tasks Organizer</string>
+    <string name="today">Today</string>
+    <string name="tasks">Tasks</string>
+    <string name="reminder_date_desc">get a reminding notification at the specified date</string>
+    <string name="taskName">Name*:</string>
+</resources>
