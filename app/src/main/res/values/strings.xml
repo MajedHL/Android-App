@@ -4,4 +4,7 @@
     <string name="tasks">Tasks</string>
     <string name="reminder_date_desc">get a reminding notification at the specified date</string>
     <string name="taskName">Name*:</string>
+    <string name="completed">completed</string>
+    <string name="due_date">Due Date</string>
+    <string name="reminder_date">Reminder Date</string>
 </resources>

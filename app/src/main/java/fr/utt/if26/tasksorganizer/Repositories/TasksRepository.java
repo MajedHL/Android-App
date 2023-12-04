@@ -62,5 +62,16 @@ public class TasksRepository {
         }
     }
 
+    public LiveData<List<Task>> getSortedTasks(){
+        Future<LiveData<List<Task>>> sortedTasks = RoomDB.service.submit(()->tasksDAO.getSortedTasks());
+        try {
+            return sortedTasks.get();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }

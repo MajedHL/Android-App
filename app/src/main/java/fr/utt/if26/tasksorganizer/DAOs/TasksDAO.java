@@ -29,4 +29,6 @@ public interface TasksDAO {
 
     @Query("SELECT * FROM Tasks WHERE STATUS != 1 ;")
     public LiveData<List<Task>> getUnDoneTasks();
+    @Query("SELECT * FROM Tasks order by Duedate ;")
+    public LiveData<List<Task>> getSortedTasks();
 }

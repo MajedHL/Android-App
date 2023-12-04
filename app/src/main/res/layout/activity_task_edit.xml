@@ -11,6 +11,7 @@
         android:id="@+id/edit_taskNameLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10sp"
         android:textSize="22dp"
         android:text="@string/taskName" />
 
@@ -19,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:ems="10"
+        android:layout_marginLeft="10sp"
         android:inputType="text"
         android:hint="task name" />
 
@@ -26,6 +28,7 @@
         android:id="@+id/edit_taskDescriptionLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10sp"
         android:textSize="22dp"
         android:text="Description:" />
 
@@ -33,6 +36,7 @@
         android:id="@+id/edit_taskDescription"
         android:layout_width="match_parent"
         android:layout_height="130dp"
+        android:layout_marginLeft="10sp"
         android:ems="10"
         android:gravity="start|top"
         android:hint="task description"
@@ -42,6 +46,7 @@
         android:id="@+id/edit_taskPriorityLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10sp"
         android:textSize="22dp"
         android:text="Priority:" />
 
@@ -49,6 +54,7 @@
         android:id="@+id/edit_taskPriorityGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10sp"
         android:orientation="horizontal">
 
         <RadioButton
@@ -76,6 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:textSize="22dp"
+        android:layout_marginLeft="10sp"
         android:text="Due Date:" />
 
     <Button
@@ -84,7 +91,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="openDatePicker"
-        android:text="Due Date"
+        android:text="@string/due_date"
+        android:layout_marginLeft="10sp"
         android:textColor="@color/white"
         app:icon="@drawable/calendar" />
     
@@ -94,6 +102,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginLeft="10sp"
         android:textSize="22dp"
         android:text="Due Time:" />
 
@@ -101,12 +110,14 @@
         android:id="@+id/edit_taskTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10sp"
         app:icon="@drawable/time"
         android:text="pick a time"/>
     <TextView
         android:id="@+id/edit_taskReminderDateLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10sp"
         android:layout_marginTop="10dp"
         android:textSize="22dp"
         android:contentDescription="@string/reminder_date_desc"
@@ -121,8 +132,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="openReminderDatePicker"
-            android:text="Reminder Date"
+            android:text="@string/reminder_date"
             android:layout_marginRight="20sp"
+            android:layout_marginLeft="10sp"
             android:textColor="@color/white"
             app:icon="@drawable/calendar" />
 
@@ -140,6 +152,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginLeft="10sp"
         android:textSize="22dp"
         android:text="Status:" />
 
@@ -154,8 +167,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18dp"
+            android:layout_marginLeft="10sp"
             android:layout_marginRight="20dp"
-            android:text="completed" />
+            android:text="@string/completed" />
 
         <RadioButton
             android:id="@+id/edit_taskStatusFalse"
@@ -166,12 +180,38 @@
 
     </RadioGroup>
 
-    <Button
-        android:id="@+id/finish_editing"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Finish editing" />
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10sp"
+            android:layout_marginRight="10sp"
+            android:textColor="@color/red"
+            android:layout_weight="1"
+            app:strokeColor="@color/red"
+            app:strokeWidth="2dp"
+            android:text="cancel" />
+        <Button
+            android:id="@+id/finish"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:textColor="@color/green"
+            app:strokeColor="@color/green"
+            app:strokeWidth="3dp"
+            android:layout_marginRight="10sp"
+            android:layout_marginLeft="10sp"
+            android:text="Finish" />
+
+    </LinearLayout>
+
 
 
 </LinearLayout>

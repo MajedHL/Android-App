@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -29,7 +30,7 @@ import fr.utt.if26.tasksorganizer.Converters.DateConverter;
     }
 )
 @TypeConverters(DateConverter.class)
-public class Task {
+public class Task implements Serializable {
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
     @NonNull
@@ -152,6 +153,13 @@ public class Task {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public boolean isLate(){
+       if(this.getDuedate()==null) return false;
+        Date today = new Date();
+       if(today.compareTo(this.Duedate)>=0 && this.isStatus()==false) return true;
+       return false;
     }
 
     @Override

@@ -48,12 +48,17 @@ public class TasksViewModel extends AndroidViewModel {
             if(hide) return tasksRepository.getUnDoneTasks();
             else  return  tasksRepository.getLiveTaskList();
         });
-
+        System.out.println("called it ?");
 //        return tasksRepository.getLiveTaskList();
         return allTasks;
     }
 
     public void setHideDoneTasks(Boolean newValue) {
         this.hideDoneTasks.setValue(newValue);
+    }
+
+    public void sortByDueDate(){
+
+
     }
 }

@@ -69,17 +69,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     class TaskHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
         TextView task_name;
         TextView task_state;
+        TextView task_timing;
         public TaskHolder(@NonNull View itemView) {
             super(itemView);
             task_name = itemView.findViewById(R.id.task_name);
             task_state = itemView.findViewById(R.id.task_state);
+            task_timing = itemView.findViewById(R.id.task_timing);
             task_name.setOnCreateContextMenuListener(this);
             task_name.setOnClickListener(view -> {
-                System.out.println("clicked item<>");
                 Task task = tasks.get(getAdapterPosition());
-
                 if (taskListener != null) {
-                    System.out.println("in if");
                     taskListener.onTaskClick(task);
                 }
             });
@@ -94,7 +93,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
            }
            else {
                task_state.setText("Un-Completed");
-               task_state.setTextColor(Color.RED);
+               task_state.setTextColor(Color.YELLOW);
+           }
+           task_timing.setText("");
+           if(task.isLate()){
+               task_timing.setText("Late");
+               task_timing.setTextColor(Color.RED);
            }
         }
 

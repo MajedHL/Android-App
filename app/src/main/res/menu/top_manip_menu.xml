@@ -11,4 +11,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:title="Hide completed tasks" />
+    <item
+        android:id="@+id/sort_duedate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Order by due date" />
 </menu>

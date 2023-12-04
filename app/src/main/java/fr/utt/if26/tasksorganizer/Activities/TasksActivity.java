@@ -1,5 +1,9 @@
 package fr.utt.if26.tasksorganizer.Activities;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -13,6 +17,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -23,6 +28,7 @@ import java.util.stream.Collectors;
 import fr.utt.if26.tasksorganizer.Adapters.TaskAdapter;
 import fr.utt.if26.tasksorganizer.Entities.Task;
 import fr.utt.if26.tasksorganizer.R;
+import fr.utt.if26.tasksorganizer.Utils.Code;
 import fr.utt.if26.tasksorganizer.Utils.DateUtil;
 import fr.utt.if26.tasksorganizer.ViewModels.TasksViewModel;
 
@@ -35,32 +41,63 @@ public class TasksActivity extends AppCompatActivity {
 
     private RecyclerView Alltasks_listView;
     private ArrayList<Task> tasks;
+
+
+    private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    System.out.println("BACK");
+                     if(result.getData()==null) {
+                         System.out.println("NULL intent");
+                         return;
+                     }
+                      int code  = result.getResultCode();
+                    if(code == Code.EDIT_SUCCESS.getValue()){
+                      Task task = (Task) result.getData().getSerializableExtra("updatedTask");
+                        Toast.makeText(getApplicationContext()," task updated successfully",Toast.LENGTH_LONG).show();
+                        tasksViewModel.updateTask(task);
+                    }
+                    else if(code == Code.CREATE_SUCCESS.getValue()){
+                        Task task = (Task) result.getData().getSerializableExtra("newTask");
+                        Toast.makeText(getApplicationContext()," task created successfully",Toast.LENGTH_LONG).show();
+                        tasksViewModel.insertTask(task);
+                    }
+                }
+            }
+    );
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_today);
-        Toolbar toolbar=findViewById(R.id.toolbar_today);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar=findViewById(R.id.toolbar_today);
+//        setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("All Tasks Page");
         Alltasks_listView = findViewById(R.id.Todaytasks);
 //        this.registerForContextMenu(Todaytasks_listView);
 
         tasksViewModel = new ViewModelProvider(this).get(TasksViewModel.class);
         addTask_button = findViewById(R.id.addTask_button);
+
         addTask_button.setOnClickListener(view -> {
             System.out.println("button clicked");
-            Task task = new Task(1,"NotTodayTask");
-            task.setDuedate(new Date());
-            tasksViewModel.insertTask(task);
-//            tasksViewModel.deleteAllTasks();
+            Intent intent = new Intent(this, Task_edit.class);
+            intent.putExtra("target","create");
+            activityResultLauncher.launch(intent);
         });
 
         Alltasks_listView.addItemDecoration(new DividerItemDecoration(this, new LinearLayoutManager(getApplicationContext()).getOrientation()));
+
         tasksViewModel.getAllTasks().observe(this, tasks -> {
             this.tasks = (ArrayList<Task>) tasks;
             TaskAdapter taskAdapter = new TaskAdapter((ArrayList<Task>) tasks, task -> {
                 Intent intent = new Intent(this, Task_edit.class);
-                startActivity(intent);
+                intent.putExtra("target","edit");
+                intent.putExtra("task",task);
+                activityResultLauncher.launch(intent);
             });
             Alltasks_listView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             Alltasks_listView.setAdapter(taskAdapter);
@@ -100,6 +137,10 @@ public class TasksActivity extends AppCompatActivity {
         }
         else if (item.getItemId()==R.id.hide_completed_tasks) {
             tasksViewModel.setHideDoneTasks(true);
+            return true;
+        }
+        else if(item.getItemId()==R.id.sort_duedate){
+            tasksViewModel.sortByDueDate();
             return true;
         }
         else return super.onOptionsItemSelected(item);
