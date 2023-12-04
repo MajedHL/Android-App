@@ -1,11 +1,14 @@
 package fr.utt.if26.tasksorganizer.DAOs;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.RawQuery;
 import androidx.room.Update;
+import androidx.sqlite.db.SupportSQLiteQuery;
 
 import java.util.List;
 
@@ -29,6 +32,10 @@ public interface TasksDAO {
 
     @Query("SELECT * FROM Tasks WHERE STATUS != 1 ;")
     public LiveData<List<Task>> getUnDoneTasks();
-    @Query("SELECT * FROM Tasks order by Duedate ;")
+    @Query("SELECT * FROM Tasks order by Duedate;")
     public LiveData<List<Task>> getSortedTasks();
+    @RawQuery(observedEntities = Task.class)
+    public LiveData<List<Task>> getFilteredTasks(SupportSQLiteQuery query);
+
+
 }

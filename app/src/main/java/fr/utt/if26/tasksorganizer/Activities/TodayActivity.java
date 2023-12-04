@@ -140,12 +140,9 @@ public class TodayActivity extends AppCompatActivity {
 
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId()==R.id.show_done_tasks){
-            tasksViewModel.setHideDoneTasks(false);
-            return true;
-        }
-        else if (item.getItemId()==R.id.hide_completed_tasks) {
-            tasksViewModel.setHideDoneTasks(true);
+
+         if (item.getItemId()==R.id.hide_completed_tasks) {
+            tasksViewModel.setHideDoneTasks();
             return true;
         }
         else return super.onOptionsItemSelected(item);

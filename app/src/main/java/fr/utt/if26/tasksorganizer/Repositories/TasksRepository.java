@@ -3,6 +3,8 @@ package fr.utt.if26.tasksorganizer.Repositories;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -71,6 +73,42 @@ public class TasksRepository {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+
+    public LiveData<List<Task>> getFilteredTasks(boolean hideCompletedTasks, List<String> sortingOrder){
+
+        StringBuilder queryBuilder = new StringBuilder("SELECT * FROM Tasks");
+
+        if(hideCompletedTasks) queryBuilder.append(" WHERE STATUS != 1");
+//        queryBuilder.append(" ORDER BY STATUS");
+//        if(sortByDueDate) queryBuilder.append(", DueDate");
+//        if(!sortByCompletion) {
+//            String s = queryBuilder.toString();
+//           String replacement = s.replace("ORDER BY STATUS","ORDER BY STATUS desc");
+//           queryBuilder =new StringBuilder();
+//           queryBuilder.append(replacement);
+//        }
+//        if(sortByPriority) queryBuilder.append(", priority desc");
+        if(sortingOrder.size()>0){
+            queryBuilder.append(" Order by "+sortingOrder.get(0));
+           if(sortingOrder.size()>1) {queryBuilder.append(", ");
+               queryBuilder.append(String.join(", ", sortingOrder.subList(1, sortingOrder.size())));
+           }
+        }
+        queryBuilder.append(";");
+        System.out.println("query:"+queryBuilder);
+        SimpleSQLiteQuery query = new SimpleSQLiteQuery(queryBuilder.toString());
+        Future<LiveData<List<Task>>> filteredTasks = RoomDB.service.submit(()->tasksDAO.getFilteredTasks(query));
+        try {
+            return filteredTasks.get();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 

@@ -1,19 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/show_done_tasks"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:title="Show completed tasks" />
+
     <item
         android:id="@+id/hide_completed_tasks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:checkable="true"
         android:title="Hide completed tasks" />
     <item
-        android:id="@+id/sort_duedate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="Order by due date" />
+        android:title="Sorts" >
+        <menu
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <item
+                android:id="@+id/sort_duedate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:title="Order by due date" />
+            <item
+                android:id="@+id/sort_completion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:title="Order by completion" />
+            <item
+                android:id="@+id/sort_priority"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:title="Order by priority" />
+            <item
+                android:id="@+id/sort_late"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:title="Order by Late tasks" />
+        </menu>
+    </item>
 </menu>

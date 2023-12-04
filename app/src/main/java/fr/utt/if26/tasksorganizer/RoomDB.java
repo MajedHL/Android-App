@@ -30,6 +30,7 @@ public abstract class RoomDB extends RoomDatabase {
     private static RoomDB Instance = null;
     public abstract UsersDAO usersDAO();
     public abstract TasksDAO tasksDAO();
+
     public abstract ConsentsDAO consentsDAO();
     public static ExecutorService service = Executors.newSingleThreadExecutor();
     public static RoomDB getInstance(final Context context){
