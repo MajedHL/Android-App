@@ -57,13 +57,10 @@ public class TasksViewModel extends AndroidViewModel {
 
     public void updateTask(Task task){tasksRepository.updateTask(task);}
 
-    public LiveData<List<Task>> getAllTasks() {
+    public LiveData<List<Task>> getAllTasks(int id) {
         allTasks = Transformations.switchMap(trigger, value->{
 
-                return tasksRepository.getFilteredTasks(value.getHide(), sortingOrder);
-//            if(value.getHide()) return tasksRepository.getUnDoneTasks();
-//            if(value.getSort()) return tasksRepository.getSortedTasks();
-//            else  return  tasksRepository.getLiveTaskList();
+                return tasksRepository.getFilteredTasks(id,value.getHide(), sortingOrder);//
         });
 
 //        return tasksRepository.getLiveTaskList();
@@ -93,7 +90,7 @@ public class TasksViewModel extends AndroidViewModel {
     }
 
     public void setSortByLateness(){
-       String sortParam = "CASE WHEN duedate < strftime('%s', 'now') * 1000 THEN 0 ELSE 1 END";
+       String sortParam = "CASE WHEN duedate < strftime('%s', 'now') * 1000 and status = 0 THEN 0 ELSE 1 END";
         if(!this.sortByLateness.getValue()) sortingOrder.add(sortParam);
         else sortingOrder.remove(sortParam);
         this.sortByLateness.setValue(!this.sortByLateness.getValue());

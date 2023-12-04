@@ -25,4 +25,6 @@ public interface UsersDAO {
 
     @Query("Delete from Users;")
     void deleteAllUsers();
+    @Query("SELECT * from users where userName=:userName and password=:password")
+    public LiveData<User> getUser(String userName, String password);
 }

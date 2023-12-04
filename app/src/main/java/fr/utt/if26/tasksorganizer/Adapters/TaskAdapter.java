@@ -46,19 +46,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     public void onBindViewHolder(@NonNull TaskHolder holder, int position) {
         holder.display(tasks.get(position));
         holder.itemView.setTag(position);
-//        holder.itemView.setOnLongClickListener(view -> {
-//            view.showContextMenu();
-//            return true;
-//        });
-//        holder.itemView.setOnClickListener(view -> {
-//            System.out.println("clicked item<>");
-//            Task task = tasks.get(position);
-//
-//            if (taskListener != null) {
-//                System.out.println("in if");
-//                taskListener.onTaskClick(task);
-//            }
-//        });
     }
 
     @Override

@@ -24,4 +24,6 @@ public class UsersViewModel extends AndroidViewModel {
     public void insertUser(User user){
         usersRepository.insertUser(user);
     }
+
+    public LiveData<User> getUser(String userName, String password){return usersRepository.getUser(userName, password);}
 }

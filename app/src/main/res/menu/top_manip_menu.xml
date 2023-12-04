@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checkable="true"
-                android:title="Order by Late tasks" />
+                android:title="Order by Lateness" />
         </menu>
     </item>
 </menu>

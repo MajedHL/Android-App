@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 
 import fr.utt.if26.tasksorganizer.Adapters.TaskAdapter;
 import fr.utt.if26.tasksorganizer.Entities.Task;
+import fr.utt.if26.tasksorganizer.Entities.User;
 import fr.utt.if26.tasksorganizer.R;
 import fr.utt.if26.tasksorganizer.Utils.Code;
 import fr.utt.if26.tasksorganizer.Utils.DateUtil;
@@ -51,6 +52,7 @@ public class TodayActivity extends AppCompatActivity {
 
     private RecyclerView Todaytasks_listView;
     private ArrayList<Task> todayTasks;
+    private User user;
 
     private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -81,11 +83,10 @@ public class TodayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_today);
-//        Toolbar toolbar=findViewById(R.id.toolbar_today);
-//        setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Today Page");
+        user = (User) getIntent().getSerializableExtra("user");
         Todaytasks_listView = findViewById(R.id.Todaytasks);
-//        this.registerForContextMenu(Todaytasks_listView);
+
 
         tasksViewModel = new ViewModelProvider(this).get(TasksViewModel.class);
         addTask_button = findViewById(R.id.addTask_button);
@@ -94,11 +95,12 @@ public class TodayActivity extends AppCompatActivity {
             Intent intent = new Intent(this, Task_edit.class);
             intent.putExtra("target","create");
             intent.putExtra("source","today");
+            intent.putExtra("user",user);
             activityResultLauncher.launch(intent);
         });
 
         Todaytasks_listView.addItemDecoration(new DividerItemDecoration(this, new LinearLayoutManager(getApplicationContext()).getOrientation()));
-        tasksViewModel.getAllTasks().observe(this, tasks -> {
+        tasksViewModel.getAllTasks(user.getId()).observe(this, tasks -> {
             Date today = new Date();
 
             todayTasks = (ArrayList<Task>) tasks.stream().filter(task -> DateUtil.sameDay(task.getDuedate(),today)).collect(Collectors.toList());
@@ -107,6 +109,7 @@ public class TodayActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, Task_edit.class);
                 intent.putExtra("target","edit");
                 intent.putExtra("task",task);
+                intent.putExtra("user",user);
                 activityResultLauncher.launch(intent);
             });
             Todaytasks_listView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -125,6 +128,7 @@ public class TodayActivity extends AppCompatActivity {
         }
         else if(item.getItemId()==R.id.Tasks_Page){
             Intent intent = new Intent(this, TasksActivity.class);
+            intent.putExtra("user", user);
             startActivity(intent);
         }
 
@@ -141,8 +145,29 @@ public class TodayActivity extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-         if (item.getItemId()==R.id.hide_completed_tasks) {
+        if (item.getItemId()==R.id.hide_completed_tasks) {
             tasksViewModel.setHideDoneTasks();
+            item.setChecked(!item.isChecked());
+            return true;
+        }
+        else if(item.getItemId()==R.id.sort_duedate){
+            tasksViewModel.setSortByDueDate();
+            item.setChecked(!item.isChecked());
+            return true;
+        }
+        else if(item.getItemId()==R.id.sort_completion){
+            tasksViewModel.setSortByCompletion();
+            item.setChecked(!item.isChecked());
+            return true;
+        }
+        else if(item.getItemId()==R.id.sort_priority){
+            tasksViewModel.setSortByPriority();
+            item.setChecked(!item.isChecked());
+            return true;
+        }
+        else if(item.getItemId()==R.id.sort_late){
+            tasksViewModel.setSortByLateness();
+            item.setChecked(!item.isChecked());
             return true;
         }
         else return super.onOptionsItemSelected(item);

@@ -7,4 +7,6 @@
     <string name="completed">completed</string>
     <string name="due_date">Due Date</string>
     <string name="reminder_date">Reminder Date</string>
+    <string name="no_account_create_one"><u>no account ? create one</u></string>
+    <string name="username">userName:</string>
 </resources>

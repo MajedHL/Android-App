@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import fr.utt.if26.tasksorganizer.Entities.Task;
+import fr.utt.if26.tasksorganizer.Entities.User;
 import fr.utt.if26.tasksorganizer.R;
 import fr.utt.if26.tasksorganizer.Utils.Code;
 import fr.utt.if26.tasksorganizer.Utils.DateUtil;
@@ -55,10 +56,14 @@ public class Task_edit extends AppCompatActivity  {
     private String target;
     private RadioButton[] priorities;
     private Task task;
+
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_edit);
+        user = (User) getIntent().getSerializableExtra("user");
+
         finishEditing = findViewById(R.id.finish);
         statusRadioGroup = findViewById(R.id.edit_taskStatusGroup);
         priorityRadioGroup = findViewById(R.id.edit_taskPriorityGroup);
@@ -87,13 +92,19 @@ public class Task_edit extends AppCompatActivity  {
               System.out.println("month ymd:"+ymd[1]);
                 dueDateButton.setText(DateUtil.getYearMonthDayFromDate(new Date()));
                 duedate =  DateUtil.computeDate(ymd[0],ymd[1],ymd[2],23,55);
+                year = ymd[0];
+                month = ymd[1];
+                day = ymd[2];
+                hour = 23;
+                minute = 55;
+                dueTimeButton.setText(hour+":"+minute);
                 System.out.println("default date:"+duedate);
             }
         }
         if(target.equals("edit")) {
            initTaskEditPage();
         } else if (target.equals("create")) {
-            task = new Task(1,"");
+            task = new Task(user.getId(),"");
         }
 
         initDatePicker((dueYear, dueMonth, dueDay) -> {

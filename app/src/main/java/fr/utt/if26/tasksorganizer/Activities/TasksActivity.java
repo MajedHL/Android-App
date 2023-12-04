@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import fr.utt.if26.tasksorganizer.Adapters.TaskAdapter;
 import fr.utt.if26.tasksorganizer.Entities.Task;
+import fr.utt.if26.tasksorganizer.Entities.User;
 import fr.utt.if26.tasksorganizer.R;
 import fr.utt.if26.tasksorganizer.Utils.Code;
 import fr.utt.if26.tasksorganizer.Utils.DateUtil;
@@ -41,6 +42,7 @@ public class TasksActivity extends AppCompatActivity {
 
     private RecyclerView Alltasks_listView;
     private ArrayList<Task> tasks;
+    private User user;
 
 
     private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
@@ -73,11 +75,10 @@ public class TasksActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_today);
-//        Toolbar toolbar=findViewById(R.id.toolbar_today);
-//        setSupportActionBar(toolbar);
+
         getSupportActionBar().setTitle("All Tasks Page");
+       user = (User) getIntent().getSerializableExtra("user");
         Alltasks_listView = findViewById(R.id.Todaytasks);
-//        this.registerForContextMenu(Todaytasks_listView);
 
         tasksViewModel = new ViewModelProvider(this).get(TasksViewModel.class);
         addTask_button = findViewById(R.id.addTask_button);
@@ -85,18 +86,20 @@ public class TasksActivity extends AppCompatActivity {
         addTask_button.setOnClickListener(view -> {
             System.out.println("button clicked");
             Intent intent = new Intent(this, Task_edit.class);
+            intent.putExtra("user",user);
             intent.putExtra("target","create");
             activityResultLauncher.launch(intent);
         });
 
         Alltasks_listView.addItemDecoration(new DividerItemDecoration(this, new LinearLayoutManager(getApplicationContext()).getOrientation()));
 
-        tasksViewModel.getAllTasks().observe(this, tasks -> {
+        tasksViewModel.getAllTasks(user.getId()).observe(this, tasks -> {
             this.tasks = (ArrayList<Task>) tasks;
             TaskAdapter taskAdapter = new TaskAdapter((ArrayList<Task>) tasks, task -> {
                 Intent intent = new Intent(this, Task_edit.class);
                 intent.putExtra("target","edit");
                 intent.putExtra("task",task);
+                intent.putExtra("user",user);
                 activityResultLauncher.launch(intent);
             });
             Alltasks_listView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -110,8 +113,8 @@ public class TasksActivity extends AppCompatActivity {
         nav_menu.setOnItemSelectedListener(item -> {
 
             if(item.getItemId()==R.id.Today_Page) {
-
                 Intent intent = new Intent(this, TodayActivity.class);
+                intent.putExtra("user",user);
                 startActivity(intent);
                 return true;
             }

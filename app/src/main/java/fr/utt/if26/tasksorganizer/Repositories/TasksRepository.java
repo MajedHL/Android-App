@@ -17,17 +17,17 @@ import fr.utt.if26.tasksorganizer.RoomDB;
 public class TasksRepository {
 
     private final TasksDAO tasksDAO;
-    private final LiveData<List<Task>> liveTaskList;
+//    private final LiveData<List<Task>> liveTaskList;
 
     public TasksRepository(Application app) {
         RoomDB bd = RoomDB.getInstance(app);
         tasksDAO = bd.tasksDAO();
-        liveTaskList = tasksDAO.getAllTasks();
+//        liveTaskList = tasksDAO.getAllTasks();
     }
 
-    public LiveData<List<Task>> getLiveTaskList() {
-        return liveTaskList;
-    }
+//    public LiveData<List<Task>> getLiveTaskList() {
+//        return liveTaskList;
+//    }
 
     public void insertTask(Task task){
         RoomDB.service.execute(()->tasksDAO.insertTask(task));
@@ -77,11 +77,11 @@ public class TasksRepository {
 
 
 
-    public LiveData<List<Task>> getFilteredTasks(boolean hideCompletedTasks, List<String> sortingOrder){
+    public LiveData<List<Task>> getFilteredTasks(int id,boolean hideCompletedTasks, List<String> sortingOrder){
 
-        StringBuilder queryBuilder = new StringBuilder("SELECT * FROM Tasks");
+        StringBuilder queryBuilder = new StringBuilder("SELECT * FROM Tasks WHERE userId = "+id);
 
-        if(hideCompletedTasks) queryBuilder.append(" WHERE STATUS != 1");
+        if(hideCompletedTasks) queryBuilder.append(" AND STATUS != 1");
 //        queryBuilder.append(" ORDER BY STATUS");
 //        if(sortByDueDate) queryBuilder.append(", DueDate");
 //        if(!sortByCompletion) {
