@@ -40,4 +40,20 @@ public class UsersRepository {
             throw new RuntimeException(e);
         }
     }
+
+    public LiveData<User> getUserByUserName(String userName){
+        Future<LiveData<User>> user = RoomDB.service.submit(()->usersDAO.getUserByUserName(userName));
+        try {
+            return user.get();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void deleteAllusers(){
+        RoomDB.service.execute(()->usersDAO.deleteAllUsers());
+    }
 }
