@@ -11,9 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import fr.utt.if26.tasksorganizer.R;
+import fr.utt.if26.tasksorganizer.Utils.EmailSender;
 import fr.utt.if26.tasksorganizer.ViewModels.TasksViewModel;
 import fr.utt.if26.tasksorganizer.ViewModels.UsersViewModel;
 import  fr.utt.if26.tasksorganizer.Entities.User;
@@ -118,6 +120,7 @@ public class LoginPage extends AppCompatActivity {
             Intent intent = new Intent(this, LoginPage.class);
             intent.putExtra("modeCreate",true);
             startActivity(intent);
+//            EmailSender.sendEmail("destination mail", "Subject", "email body");
         });
     }
 
