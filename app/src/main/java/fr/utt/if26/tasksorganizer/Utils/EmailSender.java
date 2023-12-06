@@ -7,14 +7,16 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import fr.utt.if26.tasksorganizer.Cred.Credentials;
+
 public class EmailSender {
 
     private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public static void sendEmail(String toEmail, String subject, String body) {
         executorService.execute(() -> {
-            String fromEmail = "tasksorganizer2@gmail.com";
-            String appPassword = "xdtf szrm vhmm zlxr";
+            String fromEmail = Credentials.fromEmail;
+            String appPassword = Credentials.password;
 
             Properties properties = new Properties();
             properties.put("mail.smtp.auth", "true");
