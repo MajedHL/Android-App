@@ -41,6 +41,28 @@ public class TasksRepository {
 
     public void updateTask(Task task){RoomDB.service.execute(()->tasksDAO.updateTask(task));}
 
+    public LiveData<Integer> countCompletedTasks(Integer id) {
+        Future<LiveData<Integer>> nbCompletedTasks = RoomDB.service.submit(()->tasksDAO.countCompletedTasks(id));
+        try {
+            return nbCompletedTasks.get();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public LiveData<Integer> countUnCompletedTasks(Integer id) {
+        Future<LiveData<Integer>> nbUnCompletedTasks = RoomDB.service.submit(()->tasksDAO.countUnCompletedTasks(id));
+        try {
+            return nbUnCompletedTasks.get();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public LiveData<List<Task>> getDoneTasks(){
         Future<LiveData<List<Task>>> doneTasks = RoomDB.service.submit(()->tasksDAO.getDoneTasks());
         try {
@@ -82,15 +104,6 @@ public class TasksRepository {
         StringBuilder queryBuilder = new StringBuilder("SELECT * FROM Tasks WHERE userId = "+id);
 
         if(hideCompletedTasks) queryBuilder.append(" AND STATUS != 1");
-//        queryBuilder.append(" ORDER BY STATUS");
-//        if(sortByDueDate) queryBuilder.append(", DueDate");
-//        if(!sortByCompletion) {
-//            String s = queryBuilder.toString();
-//           String replacement = s.replace("ORDER BY STATUS","ORDER BY STATUS desc");
-//           queryBuilder =new StringBuilder();
-//           queryBuilder.append(replacement);
-//        }
-//        if(sortByPriority) queryBuilder.append(", priority desc");
         if(sortingOrder.size()>0){
             queryBuilder.append(" Order by "+sortingOrder.get(0));
            if(sortingOrder.size()>1) {queryBuilder.append(", ");

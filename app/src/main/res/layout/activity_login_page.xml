@@ -51,12 +51,13 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginStart="35dp"
-        android:layout_marginTop="9dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="50dp"
         android:ems="10"
         android:hint="2@ss:Mz"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/password_label"
         app:layout_constraintTop_toBottomOf="@+id/username" />
 
@@ -66,10 +67,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="149dp"
         android:layout_marginEnd="172dp"
-        android:layout_marginBottom="282dp"
+        android:layout_marginBottom="128dp"
         android:text="Go"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -117,7 +119,6 @@
         android:layout_marginStart="19dp"
         android:layout_marginTop="7dp"
         android:layout_marginEnd="52dp"
-        android:layout_marginBottom="23dp"
         android:ems="10"
         android:hint="2@ss:Mz"
         android:inputType="textPassword"
@@ -139,6 +140,44 @@
         android:textSize="40sp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/email_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginBottom="299dp"
+        android:text="email:"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/confirm_password_label"
+         />
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="148dp"
+        android:layout_marginBottom="325dp"
+        android:ems="10"
+        android:hint="userName@gmail.com"
+        android:inputType="textEmailAddress"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/forgot_password"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:text="@string/forgot_password"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:clickable="true"
+        android:textColor="@color/blue"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

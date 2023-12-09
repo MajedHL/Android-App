@@ -9,4 +9,10 @@
     <string name="reminder_date">Reminder Date</string>
     <string name="no_account_create_one"><u>no account ? create one</u></string>
     <string name="username">userName:</string>
+    <string name="forgot_password"><u>Forgot password ?</u></string>
+    <string name="Profile_username">UserName:</string>
+    <string name="Profile_email">Email:</string>
+    <string name="Profile_password">Password:</string>
+    <string name="Profile_completed_tasks">Completed Tasks:</string>
+    <string name="Profile_uncompleted_tasks">Un-Completed Tasks:</string>
 </resources>

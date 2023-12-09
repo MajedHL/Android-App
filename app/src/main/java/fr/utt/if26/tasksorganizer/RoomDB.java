@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import fr.utt.if26.tasksorganizer.Converters.DateConverter;
+import fr.utt.if26.tasksorganizer.Cred.Credentials;
 import fr.utt.if26.tasksorganizer.DAOs.ConsentsDAO;
 import fr.utt.if26.tasksorganizer.DAOs.TasksDAO;
 import fr.utt.if26.tasksorganizer.DAOs.UsersDAO;
@@ -23,7 +24,7 @@ import fr.utt.if26.tasksorganizer.Entities.Consent;
 import fr.utt.if26.tasksorganizer.Entities.Task;
 import fr.utt.if26.tasksorganizer.Entities.User;
 
-@Database(entities = {User.class, Task.class, Consent.class}, version = 7)
+@Database(entities = {User.class, Task.class, Consent.class}, version = 1)
 @TypeConverters({DateConverter.class})
 public abstract class RoomDB extends RoomDatabase {
 
@@ -58,7 +59,7 @@ public abstract class RoomDB extends RoomDatabase {
                     ()->{
                         UsersDAO usersDAO = Instance.usersDAO();
                         usersDAO.deleteAllUsers();
-                        User testUser = new User("testUser1","password");
+                        User testUser = new User("alpha","password", Credentials.Email);
                         usersDAO.insertUser(testUser);
 
                         },
@@ -77,20 +78,7 @@ public abstract class RoomDB extends RoomDatabase {
 
                     }
             };
-            Future<Integer> result = null;
-//            for(Callable task:tasks){
-//               result = service.submit(task);
-//                System.out.println("callabal:");
-//                System.out.println("result:"+result);
-//                try {
-//                    result.get();
-//                    System.out.println("result:"+result);
-//                } catch (ExecutionException e) {
-//                    throw new RuntimeException(e);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
+
             service.execute(tasks[0]);
             service.execute(tasks[1]);
             service.execute(tasks[2]);

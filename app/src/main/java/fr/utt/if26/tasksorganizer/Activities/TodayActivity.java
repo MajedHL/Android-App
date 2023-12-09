@@ -72,8 +72,8 @@ public class TodayActivity extends AppCompatActivity {
                     }
                     else if(code == Code.CREATE_SUCCESS.getValue()){
                         Task task = (Task) result.getData().getSerializableExtra("newTask");
-                        Toast.makeText(getApplicationContext()," task created successfully",Toast.LENGTH_LONG).show();
                         tasksViewModel.insertTask(task);
+                        Toast.makeText(getApplicationContext()," task created successfully",Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -86,7 +86,7 @@ public class TodayActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Today Page");
         user = (User) getIntent().getSerializableExtra("user");
         Todaytasks_listView = findViewById(R.id.Todaytasks);
-
+        System.out.println("the user is:"+user);
 
         tasksViewModel = new ViewModelProvider(this).get(TasksViewModel.class);
         addTask_button = findViewById(R.id.addTask_button);
@@ -128,6 +128,11 @@ public class TodayActivity extends AppCompatActivity {
         }
         else if(item.getItemId()==R.id.Tasks_Page){
             Intent intent = new Intent(this, TasksActivity.class);
+            intent.putExtra("user", user);
+            startActivity(intent);
+        }
+        else if(item.getItemId()==R.id.Profile_Page){
+            Intent intent = new Intent(this, ProfileActivity.class);
             intent.putExtra("user", user);
             startActivity(intent);
         }

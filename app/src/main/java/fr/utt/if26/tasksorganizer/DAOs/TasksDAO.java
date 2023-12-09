@@ -36,6 +36,10 @@ public interface TasksDAO {
     public LiveData<List<Task>> getSortedTasks();
     @RawQuery(observedEntities = Task.class)
     public LiveData<List<Task>> getFilteredTasks(SupportSQLiteQuery query);
+    @Query("SELECT COUNT(*) from Tasks where userId=:id and status = 1")
+    public LiveData<Integer> countCompletedTasks(Integer id);
+    @Query("SELECT COUNT(*) from Tasks where userId=:id and status != 1")
+    public LiveData<Integer> countUnCompletedTasks(Integer id);
 
 
 }

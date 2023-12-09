@@ -21,6 +21,7 @@ import java.util.List;
 import fr.utt.if26.tasksorganizer.Activities.Task_edit;
 import fr.utt.if26.tasksorganizer.Entities.Task;
 import fr.utt.if26.tasksorganizer.R;
+import fr.utt.if26.tasksorganizer.Utils.DateUtil;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
 
@@ -56,12 +57,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     class TaskHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
         TextView task_name;
         TextView task_state;
-        TextView task_timing;
+        TextView task_timing, task_date;
         public TaskHolder(@NonNull View itemView) {
             super(itemView);
             task_name = itemView.findViewById(R.id.task_name);
             task_state = itemView.findViewById(R.id.task_state);
             task_timing = itemView.findViewById(R.id.task_timing);
+            task_date = itemView.findViewById(R.id.task_date);
             task_name.setOnCreateContextMenuListener(this);
             task_name.setOnClickListener(view -> {
                 Task task = tasks.get(getAdapterPosition());
@@ -74,6 +76,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
 
         void display(Task task){
             task_name.setText(task.getName());
+            task_date.setVisibility(View.GONE);
            if(task.isStatus()) {
                task_state.setText("Completed");
                task_state.setTextColor(Color.GREEN);
@@ -82,10 +85,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                task_state.setText("Un-Completed");
                task_state.setTextColor(Color.YELLOW);
            }
-           task_timing.setText("");
+           task_timing.setVisibility(View.GONE);
            if(task.isLate()){
+               task_timing.setVisibility(View.VISIBLE);
                task_timing.setText("Late");
                task_timing.setTextColor(Color.RED);
+               task_date.setTextColor(Color.RED);
+           }
+           if(task.getDuedate()!=null){
+               task_date.setVisibility(View.VISIBLE);
+               task_date.setText(DateUtil.getYearMonthDayFromDate(task.getDuedate()));
            }
         }
 

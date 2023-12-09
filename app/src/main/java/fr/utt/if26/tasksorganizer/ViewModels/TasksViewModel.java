@@ -57,13 +57,14 @@ public class TasksViewModel extends AndroidViewModel {
 
     public void updateTask(Task task){tasksRepository.updateTask(task);}
 
+    public LiveData<Integer> countCompletedTasks(Integer id){return tasksRepository.countCompletedTasks(id);}
+
+    public LiveData<Integer> countUnCompletedTasks(Integer id){return tasksRepository.countUnCompletedTasks(id);}
+
     public LiveData<List<Task>> getAllTasks(int id) {
         allTasks = Transformations.switchMap(trigger, value->{
-
                 return tasksRepository.getFilteredTasks(id,value.getHide(), sortingOrder);//
         });
-
-//        return tasksRepository.getLiveTaskList();
         return allTasks;
     }
 

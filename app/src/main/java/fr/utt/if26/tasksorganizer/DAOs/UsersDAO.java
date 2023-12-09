@@ -31,4 +31,7 @@ public interface UsersDAO {
 
     @Query("SELECT * from users where userName=:userName;")
     public LiveData<User> getUserByUserName(String userName);
+
+    @Query("SELECT * from users where userName=:userName OR email=:email;")
+    public LiveData<List<User>> getUserByUserNameOrEmail(String userName, String email);
 }

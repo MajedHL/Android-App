@@ -63,7 +63,7 @@ public class Task_edit extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_edit);
         user = (User) getIntent().getSerializableExtra("user");
-
+        System.out.println("user creating the task:"+user);
         finishEditing = findViewById(R.id.finish);
         statusRadioGroup = findViewById(R.id.edit_taskStatusGroup);
         priorityRadioGroup = findViewById(R.id.edit_taskPriorityGroup);

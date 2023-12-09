@@ -111,7 +111,6 @@ public class TasksActivity extends AppCompatActivity {
 
         nav_menu = findViewById(R.id.bottomNavigationView);
         nav_menu.setOnItemSelectedListener(item -> {
-
             if(item.getItemId()==R.id.Today_Page) {
                 Intent intent = new Intent(this, TodayActivity.class);
                 intent.putExtra("user",user);
@@ -121,7 +120,11 @@ public class TasksActivity extends AppCompatActivity {
             else if(item.getItemId()==R.id.Tasks_Page){
                 System.out.println("nothing just stay at TASKS Page");
             }
-
+            else if(item.getItemId()==R.id.Profile_Page){
+                Intent intent = new Intent(this, ProfileActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
+            }
             return true;
         });
 
