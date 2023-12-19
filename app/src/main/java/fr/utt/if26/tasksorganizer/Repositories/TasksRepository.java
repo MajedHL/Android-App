@@ -97,6 +97,28 @@ public class TasksRepository {
         }
     }
 
+    public LiveData<List<Task>> getTasksWithReminders(Integer id){
+        Future<LiveData<List<Task>>> Tasks = RoomDB.service.submit(()->tasksDAO.getTasksWithReminders(id));
+        try {
+            return Tasks.get();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public LiveData<Integer> getMaxId(Integer id){
+        Future<LiveData<Integer>> Max = RoomDB.service.submit(()->tasksDAO.getMaxId(id));
+        try {
+            return Max.get();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 
     public LiveData<List<Task>> getFilteredTasks(int id,boolean hideCompletedTasks, List<String> sortingOrder){

@@ -40,6 +40,10 @@ public interface TasksDAO {
     public LiveData<Integer> countCompletedTasks(Integer id);
     @Query("SELECT COUNT(*) from Tasks where userId=:id and status != 1")
     public LiveData<Integer> countUnCompletedTasks(Integer id);
+    @Query("SELECT * FROM Tasks WHERE STATUS != 1 and userId=:id and reminder is not null ;")
+    public LiveData<List<Task>> getTasksWithReminders(Integer id);
+    @Query("select max(id) from Tasks where userId=:id;")
+    public LiveData<Integer> getMaxId(Integer id);
 
 
 }

@@ -7,13 +7,17 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteConstraintException;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -30,17 +34,23 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import fr.utt.if26.tasksorganizer.Adapters.TaskAdapter;
+import fr.utt.if26.tasksorganizer.Entities.Pending;
 import fr.utt.if26.tasksorganizer.Entities.Task;
 import fr.utt.if26.tasksorganizer.Entities.User;
 import fr.utt.if26.tasksorganizer.R;
 import fr.utt.if26.tasksorganizer.Utils.Code;
 import fr.utt.if26.tasksorganizer.Utils.DateUtil;
+import fr.utt.if26.tasksorganizer.Utils.NotificationSystem;
 import fr.utt.if26.tasksorganizer.ViewModels.ConsentsViewModel;
+import fr.utt.if26.tasksorganizer.ViewModels.PendingsViewModel;
 import fr.utt.if26.tasksorganizer.ViewModels.TasksViewModel;
 import fr.utt.if26.tasksorganizer.ViewModels.UsersViewModel;
+import android.Manifest;
 
 public class TodayActivity extends AppCompatActivity {
 
@@ -53,6 +63,11 @@ public class TodayActivity extends AppCompatActivity {
     private RecyclerView Todaytasks_listView;
     private ArrayList<Task> todayTasks;
     private User user;
+
+    private NotificationSystem notificationSystem;
+
+    private PendingsViewModel pendingsViewModel;
+
 
     private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -69,11 +84,36 @@ public class TodayActivity extends AppCompatActivity {
                         Task task = (Task) result.getData().getSerializableExtra("updatedTask");
                         Toast.makeText(getApplicationContext()," task updated successfully",Toast.LENGTH_LONG).show();
                         tasksViewModel.updateTask(task);
+                        boolean remindingDateModified = result.getData().getBooleanExtra("remindingDateModified",false);
+                        boolean statusModified = result.getData().getBooleanExtra("statusModified",false);
+                        boolean taskNameModified = result.getData().getBooleanExtra("taskNameModified",false);
+                        if(result.getData().getBooleanExtra("remindingDateSet",false)){
+                            if(task.getReminder()!=null) {
+                                     pendingsViewModel.insertPending(new Pending(task.getId(), task.getName(),task.getReminder(), !task.isStatus()));
+                            }
+                        }
+                        else if(remindingDateModified || statusModified || taskNameModified){
+                            if(task.getReminder()!=null) {
+                                pendingsViewModel.updatePending(new Pending(task.getId(),task.getName(), task.getReminder(), !task.isStatus()));
+                                System.out.println("updating pending");
+                            }
+                        }
                     }
                     else if(code == Code.CREATE_SUCCESS.getValue()){
-                        Task task = (Task) result.getData().getSerializableExtra("newTask");
-                        tasksViewModel.insertTask(task);
+                        Task newTask = (Task) result.getData().getSerializableExtra("newTask");
+                        tasksViewModel.insertTask(newTask);
                         Toast.makeText(getApplicationContext()," task created successfully",Toast.LENGTH_LONG).show();
+                        if(newTask.getReminder()!=null) {
+                            AtomicBoolean insert =new AtomicBoolean(true);
+                            tasksViewModel.getMaxId(user.getId()).observe(TodayActivity.this, max -> {
+                                if (max != null && insert.get()) {
+                                    Pending pending = new Pending(max, newTask.getName(), newTask.getReminder(), !newTask.isStatus());
+                                    pendingsViewModel.insertPending(pending);
+                                    System.out.println("inserting pending:"+pending);
+                                    insert.set(false);
+                                }
+                            });
+                        }
                     }
                 }
             }
@@ -86,9 +126,24 @@ public class TodayActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Today Page");
         user = (User) getIntent().getSerializableExtra("user");
         Todaytasks_listView = findViewById(R.id.Todaytasks);
+        tasksViewModel = new ViewModelProvider(this).get(TasksViewModel.class);
+        pendingsViewModel = new ViewModelProvider(this).get(PendingsViewModel.class);
+        notificationSystem = NotificationSystem.getInstance(this);
         System.out.println("the user is:"+user);
 
-        tasksViewModel = new ViewModelProvider(this).get(TasksViewModel.class);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(TodayActivity.this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+                System.out.println("MISSING PERMISSIONS BRO");
+            }else {
+                    notificationSystem.activate();
+            }
+        }
+
+
+
+
+
         addTask_button = findViewById(R.id.addTask_button);
         addTask_button.setOnClickListener(view -> {
             System.out.println("button clicked");
@@ -100,9 +155,9 @@ public class TodayActivity extends AppCompatActivity {
         });
 
         Todaytasks_listView.addItemDecoration(new DividerItemDecoration(this, new LinearLayoutManager(getApplicationContext()).getOrientation()));
+
         tasksViewModel.getAllTasks(user.getId()).observe(this, tasks -> {
             Date today = new Date();
-
             todayTasks = (ArrayList<Task>) tasks.stream().filter(task -> DateUtil.sameDay(task.getDuedate(),today)).collect(Collectors.toList());
 
             TaskAdapter taskAdapter = new TaskAdapter((ArrayList<Task>) todayTasks, task -> {
@@ -112,12 +167,18 @@ public class TodayActivity extends AppCompatActivity {
                 intent.putExtra("user",user);
                 activityResultLauncher.launch(intent);
             });
+            System.out.println("tasks:"+tasks);
             Todaytasks_listView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             Todaytasks_listView.setAdapter(taskAdapter);
-
-            System.out.println("tasks:"+tasks);
-            System.out.println("todayTasks:"+todayTasks);
         });
+
+        pendingsViewModel.getAllPendings().observe(this, pendings -> {
+            if(pendings!=null){
+                System.out.println("pendings:"+pendings);
+                notificationSystem.setPendingReflection(pendings);
+            }
+        });
+
 
     nav_menu = findViewById(R.id.bottomNavigationView);
     nav_menu.setOnItemSelectedListener(item -> {
@@ -187,19 +248,48 @@ public class TodayActivity extends AppCompatActivity {
             Task task = todayTasks.get(item.getGroupId());
             task.setStatus(true);
             tasksViewModel.updateTask(task);
+            if(task.getReminder()!=null) {
+                pendingsViewModel.updatePending(new Pending(task.getId(), task.getName(),task.getReminder(), !task.isStatus()));
+            }
             return true;
         }
         else if(item.getItemId()==R.id.delete_task){
-            tasksViewModel.deleteTask(todayTasks.get(item.getGroupId()));
+            Task task = todayTasks.get(item.getGroupId());
+            tasksViewModel.deleteTask(task);
+            if(task.getReminder()!=null) {
+                pendingsViewModel.deletePending(new Pending(task.getId(),task.getName(), task.getReminder(), !task.isStatus()));
+            }
             return true;
         }
         else if(item.getItemId()==R.id.mark_undone){
             Task task = todayTasks.get(item.getGroupId());
             task.setStatus(false);
             tasksViewModel.updateTask(task);
+            if(task.getReminder()!=null) {
+                pendingsViewModel.updatePending(new Pending(task.getId(),task.getName(), task.getReminder(), !task.isStatus()));
+            }
             return true;
         }
         else return super.onContextItemSelected(item);
+    }
+
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 101:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission is granted. Instantiate NotificationSystem
+                    notificationSystem.activate();
+                    System.out.println("Permission approved");
+                } else {
+                    // Permission is denied. Explain to the user that the feature is unavailable because the feature requires a permission that the user has denied.
+                    System.out.println("Permission denied");
+                }
+        }
     }
 
 

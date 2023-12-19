@@ -40,7 +40,6 @@ public class LoginPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
-
         et_userName = findViewById(R.id.username);
         et_password = findViewById(R.id.password);
         tv_createAccount = findViewById(R.id.create_account);
@@ -59,6 +58,7 @@ public class LoginPage extends AppCompatActivity {
         modeCreate = getIntent().getBooleanExtra("modeCreate",false);
         if(modeCreate) init();
         usersViewModel = new ViewModelProvider(this).get(UsersViewModel.class);
+
         usersViewModel.getAllUsers().observe(this, users -> {
             System.out.println("users:"+users);
         });
@@ -107,7 +107,6 @@ public class LoginPage extends AppCompatActivity {
             Intent intent = new Intent(this, LoginPage.class);
             intent.putExtra("modeCreate",true);
             startActivity(intent);
-//            EmailSender.sendEmail("destination mail", "Subject", "email body");
 
         });
     }

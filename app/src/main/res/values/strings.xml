@@ -15,4 +15,6 @@
     <string name="Profile_password">Password:</string>
     <string name="Profile_completed_tasks">Completed Tasks:</string>
     <string name="Profile_uncompleted_tasks">Un-Completed Tasks:</string>
+    <string name="reminders_channel">reminders channel</string>
+    <string name="channel_description">no description</string>
 </resources>

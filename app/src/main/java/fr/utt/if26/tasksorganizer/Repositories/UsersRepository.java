@@ -69,4 +69,6 @@ public class UsersRepository {
     public void deleteAllusers(){
         RoomDB.service.execute(()->usersDAO.deleteAllUsers());
     }
+
+    public void delteUserById(int id){RoomDB.service.execute(()->usersDAO.deleteUserById(id));}
 }

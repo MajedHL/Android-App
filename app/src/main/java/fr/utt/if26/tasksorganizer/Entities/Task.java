@@ -11,6 +11,7 @@ import androidx.room.TypeConverters;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Observable;
 
 import fr.utt.if26.tasksorganizer.Converters.DateConverter;
 
@@ -30,7 +31,7 @@ import fr.utt.if26.tasksorganizer.Converters.DateConverter;
     }
 )
 @TypeConverters(DateConverter.class)
-public class Task implements Serializable {
+public class Task implements Serializable  {
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
     @NonNull

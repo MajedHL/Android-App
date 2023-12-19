@@ -61,11 +61,17 @@ public class TasksViewModel extends AndroidViewModel {
 
     public LiveData<Integer> countUnCompletedTasks(Integer id){return tasksRepository.countUnCompletedTasks(id);}
 
+    public LiveData<List<Task>> getTasksWithReminders(Integer id){return  tasksRepository.getTasksWithReminders(id);}
+
     public LiveData<List<Task>> getAllTasks(int id) {
         allTasks = Transformations.switchMap(trigger, value->{
                 return tasksRepository.getFilteredTasks(id,value.getHide(), sortingOrder);//
         });
         return allTasks;
+    }
+
+    public LiveData<Integer> getMaxId(int id){
+        return tasksRepository.getMaxId(id);
     }
 
     public void setHideDoneTasks() {

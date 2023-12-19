@@ -63,7 +63,7 @@ public class DateUtil {
             if(hour>-1){
                return new GregorianCalendar(year,month,day,hour,minute).getTime();
             }
-            else return new GregorianCalendar(year,month,day).getTime();
+            else return new GregorianCalendar(year,month,day,23,55).getTime();
         }
         else return null;
     }

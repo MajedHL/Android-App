@@ -18,28 +18,31 @@ import java.util.concurrent.Future;
 import fr.utt.if26.tasksorganizer.Converters.DateConverter;
 import fr.utt.if26.tasksorganizer.Cred.Credentials;
 import fr.utt.if26.tasksorganizer.DAOs.ConsentsDAO;
+import fr.utt.if26.tasksorganizer.DAOs.PendingsDAO;
 import fr.utt.if26.tasksorganizer.DAOs.TasksDAO;
 import fr.utt.if26.tasksorganizer.DAOs.UsersDAO;
 import fr.utt.if26.tasksorganizer.Entities.Consent;
+import fr.utt.if26.tasksorganizer.Entities.Pending;
 import fr.utt.if26.tasksorganizer.Entities.Task;
 import fr.utt.if26.tasksorganizer.Entities.User;
 
-@Database(entities = {User.class, Task.class, Consent.class}, version = 1)
+@Database(entities = {User.class, Task.class, Consent.class, Pending.class}, version = 1)
 @TypeConverters({DateConverter.class})
 public abstract class RoomDB extends RoomDatabase {
 
     private static RoomDB Instance = null;
     public abstract UsersDAO usersDAO();
     public abstract TasksDAO tasksDAO();
-
+    public abstract PendingsDAO pendingsDAO();
     public abstract ConsentsDAO consentsDAO();
+
     public static ExecutorService service = Executors.newSingleThreadExecutor();
     public static RoomDB getInstance(final Context context){
         if(Instance == null){
             synchronized (RoomDB.class){
                 if(Instance==null){
                     Instance = Room.databaseBuilder(context.getApplicationContext(),
-                                    RoomDB.class, "tasksorganizer.db")
+                                    RoomDB.class, "tasksorganizer2.db")
                             .addCallback(roomDatabasePopulateJava)
                             .allowMainThreadQueries()
                             .fallbackToDestructiveMigration()
