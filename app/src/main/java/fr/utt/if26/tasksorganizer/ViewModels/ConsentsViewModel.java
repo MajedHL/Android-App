@@ -32,4 +32,8 @@ public class ConsentsViewModel extends AndroidViewModel {
         consentsRepository.deleteAllConsents();
     }
 
+    public LiveData<Consent> getConsentByUserId(int id){
+        return consentsRepository.getConsentByUserId(id);
+    }
+
 }

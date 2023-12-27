@@ -5,6 +5,8 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import fr.utt.if26.tasksorganizer.DAOs.ConsentsDAO;
 import fr.utt.if26.tasksorganizer.Entities.Consent;
@@ -31,5 +33,16 @@ public class ConsentsRepository {
 
     public void deleteAllConsents(){
         RoomDB.service.execute(()->consentsDAO.deleteAllConsents());
+    }
+
+    public LiveData<Consent> getConsentByUserId(int id){
+        Future<LiveData<Consent>> consent = RoomDB.service.submit(()->consentsDAO.getConsentByUserId(id));
+        try {
+            return consent.get();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

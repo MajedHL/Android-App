@@ -19,8 +19,8 @@ import fr.utt.if26.tasksorganizer.Converters.DateConverter;
         onDelete = ForeignKey.CASCADE
     )
 )
+@TypeConverters(DateConverter.class)
 public class Consent {
-
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "userId")

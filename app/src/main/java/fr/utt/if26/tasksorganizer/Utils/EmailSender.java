@@ -42,7 +42,6 @@ public class EmailSender {
                 Transport.send(message);
 
                 System.out.println("Email sent successfully!");
-                executorService.shutdown();
 
             } catch (MessagingException e) {
                 e.printStackTrace();

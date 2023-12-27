@@ -19,12 +19,12 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView tv_title, tv_userName, tv_email, tv_password, tv_nbCompletedTasks, tv_nbUnCompletedTasks;
     private TasksViewModel tasksViewModel;
 
-
+    private String spaces ="   ";//3 spaces
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        String sixSpaces="      ";
+        
         user = (User) getIntent().getSerializableExtra("user");
         tv_title = findViewById(R.id.Profile_Title);
         tv_userName = findViewById(R.id.Profile_userName);
@@ -36,13 +36,13 @@ public class ProfileActivity extends AppCompatActivity {
 
         tasksViewModel.countCompletedTasks(user.getId()).observe(this, nb->{
             if(nb!=null) {
-                tv_nbCompletedTasks.setText(getResources().getString(R.string.Profile_completed_tasks)+sixSpaces+nb);
+                tv_nbCompletedTasks.setText(getResources().getString(R.string.Profile_completed_tasks)+spaces+nb);
             }
         });
 
         tasksViewModel.countUnCompletedTasks(user.getId()).observe(this, nb->{
             if(nb!=null) {
-                tv_nbUnCompletedTasks.setText(getResources().getString(R.string.Profile_uncompleted_tasks)+sixSpaces+nb);
+                tv_nbUnCompletedTasks.setText(getResources().getString(R.string.Profile_uncompleted_tasks)+spaces+nb);
             }
         });
 
@@ -74,11 +74,9 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
-    private void init(){
-        String sixSpaces="      ";
-        tv_userName.setText(getResources().getString(R.string.Profile_username)+sixSpaces+user.getUserName());
-        tv_email.setText(getResources().getString(R.string.Profile_email)+sixSpaces+user.getEmail());
-        tv_password.setText(getResources().getString(R.string.Profile_password)+sixSpaces+user.getPassword());
-
+    private void init(){        
+        tv_userName.setText(getResources().getString(R.string.Profile_username)+spaces+user.getUserName());
+        tv_email.setText(getResources().getString(R.string.Profile_email)+spaces+user.getEmail());
+        tv_password.setText(getResources().getString(R.string.Profile_password)+spaces+user.getPassword());
     }
 }

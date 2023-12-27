@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteConstraintException;
@@ -22,11 +23,16 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
@@ -39,6 +45,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import fr.utt.if26.tasksorganizer.Adapters.TaskAdapter;
+import fr.utt.if26.tasksorganizer.Entities.Consent;
 import fr.utt.if26.tasksorganizer.Entities.Pending;
 import fr.utt.if26.tasksorganizer.Entities.Task;
 import fr.utt.if26.tasksorganizer.Entities.User;
@@ -67,6 +74,9 @@ public class TodayActivity extends AppCompatActivity {
     private NotificationSystem notificationSystem;
 
     private PendingsViewModel pendingsViewModel;
+    private CheckBox agree;
+    private Button Continue;
+    private ConsentsViewModel consentsViewModel;
 
 
     private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
@@ -131,14 +141,18 @@ public class TodayActivity extends AppCompatActivity {
         notificationSystem = NotificationSystem.getInstance(this);
         System.out.println("the user is:"+user);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(TodayActivity.this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
-                System.out.println("MISSING PERMISSIONS BRO");
-            }else {
+        checkConsentement(() -> {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(TodayActivity.this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+                    System.out.println("MISSING PERMISSIONS BRO");
+                }else {
                     notificationSystem.activate();
+                }
             }
-        }
+        });
+
+
 
 
 
@@ -292,6 +306,58 @@ public class TodayActivity extends AppCompatActivity {
         }
     }
 
+
+
+    private void checkConsentement(Runnable initNotificationSystem){
+        // Inflate the custom layout
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.activity_consent_page, null);
+        consentsViewModel = new ViewModelProvider(this).get(ConsentsViewModel.class);
+        agree = view.findViewById(R.id.consent_agree);
+        Continue = view.findViewById(R.id.consent_continue);
+        AtomicBoolean consentGiven = new AtomicBoolean(false);
+// Create and show the AlertDialog
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setView(view)
+                .setCancelable(false)
+                .create();
+
+// Set the checkbox click listener
+        agree.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // Update the consentGiven variable
+            consentGiven.set(isChecked);
+        });
+
+// Set the button click listener
+        Continue.setOnClickListener((View.OnClickListener) v -> {
+            if (consentGiven.get()) {
+                Consent consent = new Consent(user.getId(),getResources().getString(R.string.agreement));
+                consentsViewModel.insertConsent(consent);
+                // If the user has given consent, dismiss the dialog
+
+            } else {
+                // If the user has not given consent, show a message
+                agree.setTextColor(Color.RED);
+                Toast.makeText(this, "You must agree to the terms to use this app", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        consentsViewModel.getConsentByUserId(user.getId()).observe(this, consent->{
+            if(consent!=null ){
+                if(!consent.getTerms().equals(getResources().getString(R.string.agreement))){
+                    TextView title = view.findViewById(R.id.consent_chart_title);
+                    title.setText(getResources().getString(R.string.consent_title)+" updated");
+                    alertDialog.show();
+                }
+                else{
+                    alertDialog.dismiss();
+                    initNotificationSystem.run();
+                }
+            }else {
+                alertDialog.show();
+            }
+        });
+    }
 
 
 }

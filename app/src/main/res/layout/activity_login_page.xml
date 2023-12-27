@@ -10,12 +10,14 @@
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="357dp"
-        android:layout_height="251dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="3dp"
         android:layout_marginBottom="292dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -107,6 +109,30 @@
                 android:visibility="invisible" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/age_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                android:text="age:" />
+
+            <EditText
+                android:id="@+id/age"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="22"
+                android:visibility="invisible"
+                android:inputType="number" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <Button
@@ -142,9 +168,7 @@
         android:layout_marginStart="170dp"
         android:layout_marginTop="150dp"
         android:layout_marginEnd="183dp"
-        android:layout_marginBottom="19dp"
         android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

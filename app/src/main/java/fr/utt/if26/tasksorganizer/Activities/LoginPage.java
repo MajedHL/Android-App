@@ -35,6 +35,8 @@ public class LoginPage extends AppCompatActivity {
     private TextView confirmPasswordLabel;
     private TextView emailLabel;
     private EditText et_email;
+    private TextView ageLabel;
+    private EditText et_age;
     private UsersViewModel usersViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,8 @@ public class LoginPage extends AppCompatActivity {
         confirmPassword = findViewById(R.id.confirm_password);
         emailLabel = findViewById(R.id.email_label);
         et_email = findViewById(R.id.email);
+        ageLabel = findViewById(R.id.age_label);
+        et_age = findViewById(R.id.age);
         tv_forgotPassword = findViewById(R.id.forgot_password);
         loginPageInfo.setText("");
         loginPageTitle.setText("LOGIN");
@@ -75,18 +79,20 @@ public class LoginPage extends AppCompatActivity {
 
 
         btn_go.setOnClickListener(view -> {
+           System.out.println("go clicked");
             String userName = et_userName.getText().toString().trim();
             String password = et_password.getText().toString().trim();
             String password_confirmation = confirmPassword.getText().toString().trim();
             String email = et_email.getText().toString().trim();
+            String age_str = et_age.getText().toString().trim();
             if(userName.isEmpty() || password.isEmpty() ) {
+                System.out.println("in missing");
                 loginPageInfo.setText("required fields missing");
                 loginPageInfo.setTextColor(Color.RED);
-
                 return;
             }
           if(modeCreate) {
-              whenCreating(password_confirmation, email, password, userName) ;
+              whenCreating(password_confirmation, email, password, userName,age_str) ;
           return;
           }
 
@@ -122,11 +128,13 @@ public class LoginPage extends AppCompatActivity {
         confirmPassword.setVisibility(View.VISIBLE);
         emailLabel.setVisibility(View.VISIBLE);
         et_email.setVisibility(View.VISIBLE);
+        ageLabel.setVisibility(View.VISIBLE);
+        et_age.setVisibility(View.VISIBLE);
     }
 
-    private void whenCreating(String password_confirmation, String email, String password, String userName){
-
-            if(password_confirmation.isEmpty() || email.isEmpty()) {
+    private void whenCreating(String password_confirmation, String email, String password, String userName,String age_str){
+            System.out.println("in creating");
+            if(password_confirmation.isEmpty() || email.isEmpty() || age_str.isEmpty()) {
                 loginPageInfo.setText("required fields missing");
                 loginPageInfo.setTextColor(Color.RED);
                 return ;
@@ -135,6 +143,11 @@ public class LoginPage extends AppCompatActivity {
                 loginPageInfo.setText("password confirmation wrong");
                 loginPageInfo.setTextColor(Color.RED);
                 return ;
+            }
+            if(Integer.parseInt(age_str)<5){
+                loginPageInfo.setText("age cant be under 5");
+                loginPageInfo.setTextColor(Color.RED);
+                return;
             }
 
 
@@ -152,7 +165,7 @@ public class LoginPage extends AppCompatActivity {
                     usersViewModel.insertUser(newUser);
                     usersViewModel.getUserByUserName(userName).observe(this, user -> {
                         if(user!=null){
-                            Intent intent = new Intent(this, TodayActivity.class);
+                            Intent intent = new Intent(this, ConsentPage.class);
                             intent.putExtra("user", user);
                             startActivity(intent);
                         }
