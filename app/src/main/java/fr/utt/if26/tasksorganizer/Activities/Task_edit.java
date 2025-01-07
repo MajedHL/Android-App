@@ -67,7 +67,6 @@ public class Task_edit extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_edit);
         user = (User) getIntent().getSerializableExtra("user");
-        System.out.println("user creating the task:"+user);
         finishEditing = findViewById(R.id.finish);
         statusRadioGroup = findViewById(R.id.edit_taskStatusGroup);
         priorityRadioGroup = findViewById(R.id.edit_taskPriorityGroup);
@@ -93,7 +92,7 @@ public class Task_edit extends AppCompatActivity  {
         if(getIntent().getStringExtra("source")!=null){
             if(getIntent().getStringExtra("source").equals("today")) {
               int[] ymd=  DateUtil.getYearMothDayValues(new Date());
-              System.out.println("month ymd:"+ymd[1]);
+
                 dueDateButton.setText(DateUtil.getYearMonthDayFromDate(new Date()));
                 duedate =  DateUtil.computeDate(ymd[0],ymd[1],ymd[2],23,55);
                 year = ymd[0];
@@ -102,7 +101,7 @@ public class Task_edit extends AppCompatActivity  {
                 hour = 23;
                 minute = 55;
                 dueTimeButton.setText(hour+":"+minute);
-                System.out.println("default date:"+duedate);
+
             }
         }
         if(target.equals("edit")) {
@@ -117,8 +116,6 @@ public class Task_edit extends AppCompatActivity  {
             this.month = dueMonth;
             this.day = dueDay;
             Calendar calendar = new GregorianCalendar(year,month,day);
-//            duedate = calendar.getTime();
-//            System.out.println("Due Date picked:"+duedate);
 
         },(reminderYear, reminderMonth, reminderDay) -> {
 
@@ -127,7 +124,6 @@ public class Task_edit extends AppCompatActivity  {
             this.reminderDay = reminderDay;
             Calendar calendar = new GregorianCalendar(reminderYear,reminderMonth,reminderDay);
             remindingDate = calendar.getTime();
-            System.out.println("Reminding Date picked:"+remindingDate);
 
         });
 
@@ -175,9 +171,8 @@ public class Task_edit extends AppCompatActivity  {
         Calendar cal = Calendar.getInstance();
         datePickerDialog = new DatePickerDialog(this, AlertDialog.THEME_HOLO_LIGHT,dateSetListener,
                 cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH));
-        System.out.println("date picker init:"+duedate);
+
         if(duedate!=null) {
-            System.out.println("yes in");
             int [] ymd = DateUtil.getYearMothDayValues(duedate);
             datePickerDialog = new DatePickerDialog(this, AlertDialog.THEME_HOLO_LIGHT, dateSetListener,
                     ymd[0], ymd[1], ymd[2]);
@@ -224,9 +219,7 @@ public class Task_edit extends AppCompatActivity  {
             String status_str="";
             boolean status = false;
 
-            System.out.println("taskName:"+taskName);
             if(taskName.isEmpty()) {
-               System.out.println("taskname is empty or blank:"+taskName);
                TextView taskNameLabel = findViewById(R.id.edit_taskNameLabel);
 
                taskNameLabel.setText(this.getResources().getString(R.string.taskName)+"(required field)");
@@ -234,16 +227,11 @@ public class Task_edit extends AppCompatActivity  {
                return;
            }
            String description = et_taskDescription.getText().toString().trim();
-            System.out.println("description:"+description);// default: empty
+
             selectedPriorityButton = findViewById(priorityRadioGroup.getCheckedRadioButtonId());
             if(selectedPriorityButton!=null) {
                 priority = Integer.parseInt(selectedPriorityButton.getText().toString());
             }
-            System.out.println("priority:" + priority);
-            System.out.println("year:"+year+"; month:"+month+"; day:"+day);// default:0
-            System.out.println(hour+":"+minute);// default:0
-            System.out.println("reminder year:"+reminderYear);// default:0
-            System.out.println("reminder hour:"+reminderHour);// default:0
 
 
          selectedStatusButton = findViewById((statusRadioGroup.getCheckedRadioButtonId()));
@@ -251,7 +239,7 @@ public class Task_edit extends AppCompatActivity  {
              status_str = selectedStatusButton.getText().toString();
             if(status_str.equals(this.getResources().getString(R.string.completed))) status = true;
          }
-            System.out.println("status_str:"+status_str +"; status:"+status);
+
            if((hour!=-1 && year==0) ){
                 TextView dueDateLabel = findViewById(R.id.edit_taskDueDateLabel);
                dueDateLabel.setText(this.getResources().getString(R.string.due_date)+"(if u pick a time u have to pick a date)");
@@ -268,7 +256,7 @@ public class Task_edit extends AppCompatActivity  {
            }
 
         boolean coherentDates = checkDatesCoherenceAndCompute();
-           System.out.println("date coherence:"+coherentDates);
+
         if(!coherentDates){
             if(year==0 && reminderYear!=0){
                 TextView reminderDateLabel = findViewById(R.id.edit_taskReminderDateLabel);
@@ -289,7 +277,7 @@ public class Task_edit extends AppCompatActivity  {
         task.setDescription(description);
         task.setPriority(priority);
         task.setDuedate(duedate);
-        System.out.println("EDIT remindingDate:"+remindingDate);
+
         task.setReminder(remindingDate);
 
         if(task.isStatus()!=status) statusModified = true;
@@ -302,11 +290,9 @@ public class Task_edit extends AppCompatActivity  {
                intent.putExtra("remindingDateSet", remindingDateSet.get());
                intent.putExtra("statusModified",statusModified);
                intent.putExtra("taskNameModified",taskNameModified);
-               System.out.println("updatedTask:" + task);
                setResult(Code.EDIT_SUCCESS.getValue(), intent);
            } else if (target.equals("create")) {
                intent.putExtra("newTask", task);
-               System.out.println("newTask:" + task);
                setResult(Code.CREATE_SUCCESS.getValue(), intent);
            }
             finish();
@@ -316,7 +302,6 @@ public class Task_edit extends AppCompatActivity  {
 
     private void initTaskEditPage(){
         task= (Task)getIntent().getSerializableExtra("task");
-        System.out.println("target=>edit; task:"+task);
         et_taskName.setText(task.getName());
         et_taskDescription.setText(task.getDescription());
         if(task.getPriority()>0 && task.getPriority()<=priorities.length) priorities[task.getPriority()-1].setChecked(true);

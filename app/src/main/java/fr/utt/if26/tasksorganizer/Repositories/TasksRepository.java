@@ -133,7 +133,6 @@ public class TasksRepository {
            }
         }
         queryBuilder.append(";");
-        System.out.println("query:"+queryBuilder);
         SimpleSQLiteQuery query = new SimpleSQLiteQuery(queryBuilder.toString());
         Future<LiveData<List<Task>>> filteredTasks = RoomDB.service.submit(()->tasksDAO.getFilteredTasks(query));
         try {

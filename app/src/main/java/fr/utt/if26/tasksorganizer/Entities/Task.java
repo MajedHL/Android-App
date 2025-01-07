@@ -131,7 +131,6 @@ public class Task implements Serializable  {
         String [] ymdhms = formattedDate.split(" ");
         String [] ymd = ymdhms[0].split("-");
         String year = ymd[0];
-        System.out.println("year:"+year);
         return year;
     }
 
