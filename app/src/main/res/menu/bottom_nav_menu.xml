@@ -14,7 +14,9 @@
         android:icon="@drawable/alltasks2"
         android:title="@string/tasks" />
     <item
+        android:id="@+id/Profile_Page"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="Item" />
+        android:icon="@drawable/profile"
+        android:title="Profile" />
 </menu>

@@ -11,6 +11,7 @@ import androidx.room.TypeConverters;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Observable;
 
 import fr.utt.if26.tasksorganizer.Converters.DateConverter;
 
@@ -30,7 +31,7 @@ import fr.utt.if26.tasksorganizer.Converters.DateConverter;
     }
 )
 @TypeConverters(DateConverter.class)
-public class Task implements Serializable {
+public class Task implements Serializable  {
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
     @NonNull
@@ -124,13 +125,12 @@ public class Task implements Serializable {
     }
     public String getFormattedDate(Date date){
         if(date==null) return"" ;
-        return new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(date);
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
     }
     public String getYear(String formattedDate){
         String [] ymdhms = formattedDate.split(" ");
         String [] ymd = ymdhms[0].split("-");
         String year = ymd[0];
-        System.out.println("year:"+year);
         return year;
     }
 
@@ -158,8 +158,8 @@ public class Task implements Serializable {
     public boolean isLate(){
        if(this.getDuedate()==null) return false;
         Date today = new Date();
-       if(today.compareTo(this.Duedate)>=0 && this.isStatus()==false) return true;
-       return false;
+        if(today.after(this.Duedate) && !this.isStatus()) return true;
+        return false;
     }
 
     @Override

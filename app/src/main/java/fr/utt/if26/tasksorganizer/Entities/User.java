@@ -6,9 +6,15 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
 
-@Entity(tableName = "Users", indices = @Index(value = "userName",unique = true))
-public class User {
+
+@Entity(tableName = "Users", indices = {
+        @Index(value = "userName", unique = true),
+        @Index(value = "email", unique = true)
+    }
+)
+public class User implements Serializable {
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
     @NonNull
@@ -22,9 +28,14 @@ public class User {
     @NonNull
     private  String password;
 
-    public User( String userName, String password) {
+    @ColumnInfo(name = "email")
+    @NonNull
+    private String email;
+
+    public User( String userName, String password, String email) {
         this.userName = userName;
         this.password = password;
+        this.email = email;
     }
 
     public int getId() {
@@ -52,6 +63,14 @@ public class User {
         this.id = id;
     }
 
+    @NonNull
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(@NonNull String email) {
+        this.email = email;
+    }
 
     @Override
     public String toString() {
@@ -59,6 +78,7 @@ public class User {
                 "id=" + id +
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

@@ -21,8 +21,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import fr.utt.if26.tasksorganizer.Entities.Task;
+import fr.utt.if26.tasksorganizer.Entities.User;
 import fr.utt.if26.tasksorganizer.R;
 import fr.utt.if26.tasksorganizer.Utils.Code;
 import fr.utt.if26.tasksorganizer.Utils.DateUtil;
@@ -55,10 +57,16 @@ public class Task_edit extends AppCompatActivity  {
     private String target;
     private RadioButton[] priorities;
     private Task task;
+    private AtomicBoolean remindingDateModified = new AtomicBoolean(false);
+    private AtomicBoolean remindingDateSet = new AtomicBoolean(false);
+    private boolean statusModified = false;
+    private boolean taskNameModified =false;
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_edit);
+        user = (User) getIntent().getSerializableExtra("user");
         finishEditing = findViewById(R.id.finish);
         statusRadioGroup = findViewById(R.id.edit_taskStatusGroup);
         priorityRadioGroup = findViewById(R.id.edit_taskPriorityGroup);
@@ -84,16 +92,22 @@ public class Task_edit extends AppCompatActivity  {
         if(getIntent().getStringExtra("source")!=null){
             if(getIntent().getStringExtra("source").equals("today")) {
               int[] ymd=  DateUtil.getYearMothDayValues(new Date());
-              System.out.println("month ymd:"+ymd[1]);
+
                 dueDateButton.setText(DateUtil.getYearMonthDayFromDate(new Date()));
                 duedate =  DateUtil.computeDate(ymd[0],ymd[1],ymd[2],23,55);
-                System.out.println("default date:"+duedate);
+                year = ymd[0];
+                month = ymd[1];
+                day = ymd[2];
+                hour = 23;
+                minute = 55;
+                dueTimeButton.setText(hour+":"+minute);
+
             }
         }
         if(target.equals("edit")) {
            initTaskEditPage();
         } else if (target.equals("create")) {
-            task = new Task(1,"");
+            task = new Task(user.getId(),"");
         }
 
         initDatePicker((dueYear, dueMonth, dueDay) -> {
@@ -102,8 +116,6 @@ public class Task_edit extends AppCompatActivity  {
             this.month = dueMonth;
             this.day = dueDay;
             Calendar calendar = new GregorianCalendar(year,month,day);
-//            duedate = calendar.getTime();
-//            System.out.println("Due Date picked:"+duedate);
 
         },(reminderYear, reminderMonth, reminderDay) -> {
 
@@ -112,7 +124,6 @@ public class Task_edit extends AppCompatActivity  {
             this.reminderDay = reminderDay;
             Calendar calendar = new GregorianCalendar(reminderYear,reminderMonth,reminderDay);
             remindingDate = calendar.getTime();
-            System.out.println("Reminding Date picked:"+remindingDate);
 
         });
 
@@ -133,6 +144,7 @@ public class Task_edit extends AppCompatActivity  {
                 reminderTimeButton.setText(hour+":"+minute);
                 this.reminderHour = hour;
                 this.reminderMinute = minute;
+                remindingDateModified.set(true);
             });
             timePicker.show(getSupportFragmentManager(), "reminder time picker");
         });
@@ -153,14 +165,14 @@ public class Task_edit extends AppCompatActivity  {
             reminderDateSet.setReminderYearMonthDay(year, month, day);
             month++;
             reminderDateButton.setText(DateUtil.getAngDateFormat(year, month, day));
-
+            if(task.getReminder()!=null) remindingDateModified.set(true);
+            if(task.getReminder()==null) remindingDateSet.set(true);
         };
         Calendar cal = Calendar.getInstance();
         datePickerDialog = new DatePickerDialog(this, AlertDialog.THEME_HOLO_LIGHT,dateSetListener,
                 cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH));
-        System.out.println("date picker init:"+duedate);
+
         if(duedate!=null) {
-            System.out.println("yes in");
             int [] ymd = DateUtil.getYearMothDayValues(duedate);
             datePickerDialog = new DatePickerDialog(this, AlertDialog.THEME_HOLO_LIGHT, dateSetListener,
                     ymd[0], ymd[1], ymd[2]);
@@ -207,9 +219,7 @@ public class Task_edit extends AppCompatActivity  {
             String status_str="";
             boolean status = false;
 
-            System.out.println("taskName:"+taskName);
             if(taskName.isEmpty()) {
-               System.out.println("taskname is empty or blank:"+taskName);
                TextView taskNameLabel = findViewById(R.id.edit_taskNameLabel);
 
                taskNameLabel.setText(this.getResources().getString(R.string.taskName)+"(required field)");
@@ -217,16 +227,11 @@ public class Task_edit extends AppCompatActivity  {
                return;
            }
            String description = et_taskDescription.getText().toString().trim();
-            System.out.println("description:"+description);// default: empty
+
             selectedPriorityButton = findViewById(priorityRadioGroup.getCheckedRadioButtonId());
             if(selectedPriorityButton!=null) {
                 priority = Integer.parseInt(selectedPriorityButton.getText().toString());
             }
-            System.out.println("priority:" + priority);
-            System.out.println("year:"+year+"; month:"+month+"; day:"+day);// default:0
-            System.out.println(hour+":"+minute);// default:0
-            System.out.println("reminder year:"+reminderYear);// default:0
-            System.out.println("reminder hour:"+reminderHour);// default:0
 
 
          selectedStatusButton = findViewById((statusRadioGroup.getCheckedRadioButtonId()));
@@ -234,43 +239,60 @@ public class Task_edit extends AppCompatActivity  {
              status_str = selectedStatusButton.getText().toString();
             if(status_str.equals(this.getResources().getString(R.string.completed))) status = true;
          }
-            System.out.println("status_str:"+status_str +"; status:"+status);
+
            if((hour!=-1 && year==0) ){
                 TextView dueDateLabel = findViewById(R.id.edit_taskDueDateLabel);
                dueDateLabel.setText(this.getResources().getString(R.string.due_date)+"(if u pick a time u have to pick a date)");
                dueDateLabel.setTextColor(Color.RED);
+               dueDateLabel.setTextSize(17);
                return;
            }
            if((reminderHour!=-1 && reminderYear==0)){
                TextView reminderDateLabel = findViewById(R.id.edit_taskReminderDateLabel);
                reminderDateLabel.setText(this.getResources().getString(R.string.reminder_date)+"(if u pick a time u have to pick a date)");
                reminderDateLabel.setTextColor(Color.RED);
+               reminderDateLabel.setTextSize(17);
                return;
            }
 
         boolean coherentDates = checkDatesCoherenceAndCompute();
-           System.out.println("date coherence:"+coherentDates);
+
         if(!coherentDates){
+            if(year==0 && reminderYear!=0){
+                TextView reminderDateLabel = findViewById(R.id.edit_taskReminderDateLabel);
+                reminderDateLabel.setText(this.getResources().getString(R.string.reminder_date)+"(u cant pick a reminder if there is no due date)");
+                reminderDateLabel.setTextColor(Color.RED);
+                reminderDateLabel.setTextSize(17);
+                return;
+            }
             TextView reminderDateLabel = findViewById(R.id.edit_taskReminderDateLabel);
             reminderDateLabel.setText(this.getResources().getString(R.string.reminder_date)+"(reminder date should be before the due date)");
             reminderDateLabel.setTextColor(Color.RED);
+            reminderDateLabel.setTextSize(17);
             return;
         }
+
+        if(!task.getName().equals(taskName)) taskNameModified = true;
         task.setName(taskName);
         task.setDescription(description);
         task.setPriority(priority);
         task.setDuedate(duedate);
+
         task.setReminder(remindingDate);
+
+        if(task.isStatus()!=status) statusModified = true;
         task.setStatus(status);
 
             Intent intent = new Intent();
            if(target.equals("edit")) {
                intent.putExtra("updatedTask", task);
-               System.out.println("updatedTask:" + task);
+               intent.putExtra("remindingDateModified", remindingDateModified.get());
+               intent.putExtra("remindingDateSet", remindingDateSet.get());
+               intent.putExtra("statusModified",statusModified);
+               intent.putExtra("taskNameModified",taskNameModified);
                setResult(Code.EDIT_SUCCESS.getValue(), intent);
            } else if (target.equals("create")) {
                intent.putExtra("newTask", task);
-               System.out.println("newTask:" + task);
                setResult(Code.CREATE_SUCCESS.getValue(), intent);
            }
             finish();
@@ -280,7 +302,6 @@ public class Task_edit extends AppCompatActivity  {
 
     private void initTaskEditPage(){
         task= (Task)getIntent().getSerializableExtra("task");
-        System.out.println("target=>edit; task:"+task);
         et_taskName.setText(task.getName());
         et_taskDescription.setText(task.getDescription());
         if(task.getPriority()>0 && task.getPriority()<=priorities.length) priorities[task.getPriority()-1].setChecked(true);
@@ -314,6 +335,7 @@ public class Task_edit extends AppCompatActivity  {
     }
 
     private boolean checkDatesCoherenceAndCompute(){
+        if(year==0 && reminderYear!=0) return false;
         if(year!=0 ){
             this.duedate = DateUtil.computeDate(year,month,day,hour,minute);
         }

@@ -7,4 +7,22 @@
     <string name="completed">completed</string>
     <string name="due_date">Due Date</string>
     <string name="reminder_date">Reminder Date</string>
+    <string name="no_account_create_one"><u>no account ? create one</u></string>
+    <string name="username">userName:</string>
+    <string name="forgot_password"><u>Forgot password ?</u></string>
+    <string name="Profile_username">UserName:</string>
+    <string name="Profile_email">Email:</string>
+    <string name="Profile_password">Password:</string>
+    <string name="Profile_completed_tasks">Completed Tasks:</string>
+    <string name="Profile_uncompleted_tasks">Un-Completed Tasks:</string>
+    <string name="reminders_channel">reminders channel</string>
+    <string name="channel_description">no description</string>
+    <string name="agreement"> \nTaskOrganizer respects your privacy and is committed to protecting your personal data. This consent agreement will inform you as to how we look after your personal data when you use our app and tell you about your privacy rights and how the law protects you.
+        \n\n<b>What data we collect:</b> We collect your email address and age.
+        \n\n<b>Why we collect this data:</b> We collect your email to send tokens for password restoration and to communicate with you. We collect your age to understand the categories of people using the app and adapt the UI accordingly.
+       \n \n<b>How we use this data:</b> We use your email to send password restoration tokens and updates about the app. We analyze age data to improve the user interface and experience.
+       \n \n<b>Data Sharing:</b> We do not share your personal data with any third-party organizations.
+       \n \n<b>Data Security:</b> We use encryption and other security measures to protect your data.
+       \n \nBy clicking I Agree,you consent to our collection and use of your data as described in this agreement. If you have any questions about this agreement or our privacy practices, please contact us at: taskOrganizer@gmail.com</string>
+    <string name="consent_title">User Consent Agreement</string>
 </resources>

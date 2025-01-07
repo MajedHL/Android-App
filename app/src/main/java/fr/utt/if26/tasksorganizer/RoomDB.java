@@ -9,35 +9,37 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import fr.utt.if26.tasksorganizer.Converters.DateConverter;
+import fr.utt.if26.tasksorganizer.Cred.Credentials;
 import fr.utt.if26.tasksorganizer.DAOs.ConsentsDAO;
+import fr.utt.if26.tasksorganizer.DAOs.PendingsDAO;
 import fr.utt.if26.tasksorganizer.DAOs.TasksDAO;
 import fr.utt.if26.tasksorganizer.DAOs.UsersDAO;
 import fr.utt.if26.tasksorganizer.Entities.Consent;
+import fr.utt.if26.tasksorganizer.Entities.Pending;
 import fr.utt.if26.tasksorganizer.Entities.Task;
 import fr.utt.if26.tasksorganizer.Entities.User;
 
-@Database(entities = {User.class, Task.class, Consent.class}, version = 7)
+@Database(entities = {User.class, Task.class, Consent.class, Pending.class}, version = 1)
 @TypeConverters({DateConverter.class})
 public abstract class RoomDB extends RoomDatabase {
 
     private static RoomDB Instance = null;
     public abstract UsersDAO usersDAO();
     public abstract TasksDAO tasksDAO();
+    public abstract PendingsDAO pendingsDAO();
     public abstract ConsentsDAO consentsDAO();
+
     public static ExecutorService service = Executors.newSingleThreadExecutor();
     public static RoomDB getInstance(final Context context){
         if(Instance == null){
             synchronized (RoomDB.class){
                 if(Instance==null){
                     Instance = Room.databaseBuilder(context.getApplicationContext(),
-                                    RoomDB.class, "tasksorganizer.db")
+                                    RoomDB.class, "tasksorganizer2.db")
                             .addCallback(roomDatabasePopulateJava)
                             .allowMainThreadQueries()
                             .fallbackToDestructiveMigration()
@@ -57,7 +59,7 @@ public abstract class RoomDB extends RoomDatabase {
                     ()->{
                         UsersDAO usersDAO = Instance.usersDAO();
                         usersDAO.deleteAllUsers();
-                        User testUser = new User("testUser1","password");
+                        User testUser = new User("alpha","password", Credentials.Email);
                         usersDAO.insertUser(testUser);
 
                         },
@@ -76,20 +78,7 @@ public abstract class RoomDB extends RoomDatabase {
 
                     }
             };
-            Future<Integer> result = null;
-//            for(Callable task:tasks){
-//               result = service.submit(task);
-//                System.out.println("callabal:");
-//                System.out.println("result:"+result);
-//                try {
-//                    result.get();
-//                    System.out.println("result:"+result);
-//                } catch (ExecutionException e) {
-//                    throw new RuntimeException(e);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
+
             service.execute(tasks[0]);
             service.execute(tasks[1]);
             service.execute(tasks[2]);
