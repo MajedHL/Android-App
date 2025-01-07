@@ -89,26 +89,7 @@ public class NotificationSystem   {
 
         }
     }
-//    public void addNotif(Task task){
-//        if(task.getReminder()==null) return;
-//        Date remindingDate = task.getReminder();
-//        String taskName = task.getName();
-//        Integer taskId = task.getId();
-//        Intent intent = new Intent(context, AlarmReceiver.class);
-//        intent.putExtra("taskName",taskName);
-//        intent.putExtra("taskId",taskId);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, taskId, intent, PendingIntent.FLAG_IMMUTABLE);
-////        reminderTasks.add(task);
-////        map.put(task,pendingIntent);
-//        try {
-//            System.out.println("date:"+remindingDate);
-//            System.out.println("time:"+remindingDate.getTime());
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, remindingDate.getTime(), pendingIntent);
-//        System.out.println("alarm set");
-//    }
+
 
     public void addNotification(Pending pending){
        if(!pending.isActive())return;
@@ -119,10 +100,6 @@ public class NotificationSystem   {
         intent.putExtra("taskName",taskName);
         intent.putExtra("taskId",taskId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, taskId, intent, PendingIntent.FLAG_IMMUTABLE);
-        System.out.println("code:"+taskId);
-        System.out.println("date:"+pending.getDate());
-        System.out.println("name:"+taskName);
-        System.out.println("time:"+pending.getDate().getTime());
         alarmManager.set(AlarmManager.RTC_WAKEUP, pending.getDate().getTime(), pendingIntent);
     }
 
@@ -189,7 +166,6 @@ public class NotificationSystem   {
 
 
     private void refresh(){
-        System.out.println("before:"+pendingList);
         //added a task
         if(pendingReflection.size()>pendingList.size()){
          OptionalInt max = pendingReflection.stream().mapToInt(Pending::getRequest_code).max();
@@ -244,7 +220,6 @@ public class NotificationSystem   {
                 }
             }
         }
-        System.out.println("after:"+pendingList);
     }
 
 

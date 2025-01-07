@@ -79,14 +79,12 @@ public class LoginPage extends AppCompatActivity {
 
 
         btn_go.setOnClickListener(view -> {
-           System.out.println("go clicked");
             String userName = et_userName.getText().toString().trim();
             String password = et_password.getText().toString().trim();
             String password_confirmation = confirmPassword.getText().toString().trim();
             String email = et_email.getText().toString().trim();
             String age_str = et_age.getText().toString().trim();
             if(userName.isEmpty() || password.isEmpty() ) {
-                System.out.println("in missing");
                 loginPageInfo.setText("required fields missing");
                 loginPageInfo.setTextColor(Color.RED);
                 return;
@@ -133,8 +131,8 @@ public class LoginPage extends AppCompatActivity {
     }
 
     private void whenCreating(String password_confirmation, String email, String password, String userName,String age_str){
-            System.out.println("in creating");
-            if(password_confirmation.isEmpty() || email.isEmpty() || age_str.isEmpty()) {
+
+                if(password_confirmation.isEmpty() || email.isEmpty() || age_str.isEmpty()) {
                 loginPageInfo.setText("required fields missing");
                 loginPageInfo.setTextColor(Color.RED);
                 return ;
@@ -154,7 +152,6 @@ public class LoginPage extends AppCompatActivity {
             final AtomicBoolean enter = new AtomicBoolean(true);
             usersViewModel.getUserByUserNameOrEmail(userName, email).observe(this, users -> {
                 if(users!=null && users.size()>0 && enter.get()){
-                    System.out.println("users found:"+ users);
                     loginPageInfo.setText("user already exist, userName or email already in use");
                     loginPageInfo.setTextColor(Color.RED);
 
@@ -170,8 +167,6 @@ public class LoginPage extends AppCompatActivity {
                             startActivity(intent);
                         }
                     });
-
-
                 }
             });
     }
