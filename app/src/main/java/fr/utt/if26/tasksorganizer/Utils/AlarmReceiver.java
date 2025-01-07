@@ -24,11 +24,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        System.out.println("x-in onReceive");
         String taskName= intent.getStringExtra("taskName");
         Integer taskId = intent.getIntExtra("taskId",NOTIFICATION_ID);
-        System.out.println("on receive taskName:"+taskName);
-        System.out.println("on receive code:"+taskId);
+
         // Show notification
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, getChannelId())

@@ -84,7 +84,6 @@ public class TodayActivity extends AppCompatActivity {
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
-                    System.out.println("BACK");
                     if(result.getData()==null) {
                         System.out.println("NULL intent");
                         return;
@@ -105,7 +104,6 @@ public class TodayActivity extends AppCompatActivity {
                         else if(remindingDateModified || statusModified || taskNameModified){
                             if(task.getReminder()!=null) {
                                 pendingsViewModel.updatePending(new Pending(task.getId(),task.getName(), task.getReminder(), !task.isStatus()));
-                                System.out.println("updating pending");
                             }
                         }
                     }
@@ -119,7 +117,6 @@ public class TodayActivity extends AppCompatActivity {
                                 if (max != null && insert.get()) {
                                     Pending pending = new Pending(max, newTask.getName(), newTask.getReminder(), !newTask.isStatus());
                                     pendingsViewModel.insertPending(pending);
-                                    System.out.println("inserting pending:"+pending);
                                     insert.set(false);
                                 }
                             });
@@ -139,13 +136,12 @@ public class TodayActivity extends AppCompatActivity {
         tasksViewModel = new ViewModelProvider(this).get(TasksViewModel.class);
         pendingsViewModel = new ViewModelProvider(this).get(PendingsViewModel.class);
         notificationSystem = NotificationSystem.getInstance(this);
-        System.out.println("the user is:"+user);
 
         checkConsentement(() -> {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(TodayActivity.this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
-                    System.out.println("MISSING PERMISSIONS BRO");
+
                 }else {
                     notificationSystem.activate();
                 }
@@ -160,7 +156,6 @@ public class TodayActivity extends AppCompatActivity {
 
         addTask_button = findViewById(R.id.addTask_button);
         addTask_button.setOnClickListener(view -> {
-            System.out.println("button clicked");
             Intent intent = new Intent(this, Task_edit.class);
             intent.putExtra("target","create");
             intent.putExtra("source","today");
@@ -181,14 +176,12 @@ public class TodayActivity extends AppCompatActivity {
                 intent.putExtra("user",user);
                 activityResultLauncher.launch(intent);
             });
-            System.out.println("tasks:"+tasks);
             Todaytasks_listView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             Todaytasks_listView.setAdapter(taskAdapter);
         });
 
         pendingsViewModel.getAllPendings().observe(this, pendings -> {
             if(pendings!=null){
-                System.out.println("pendings:"+pendings);
                 notificationSystem.setPendingReflection(pendings);
             }
         });
@@ -298,7 +291,6 @@ public class TodayActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Permission is granted. Instantiate NotificationSystem
                     notificationSystem.activate();
-                    System.out.println("Permission approved");
                 } else {
                     // Permission is denied. Explain to the user that the feature is unavailable because the feature requires a permission that the user has denied.
                     System.out.println("Permission denied");

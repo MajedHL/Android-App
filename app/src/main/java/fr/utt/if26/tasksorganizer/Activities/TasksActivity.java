@@ -54,9 +54,7 @@ public class TasksActivity extends AppCompatActivity {
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
-                    System.out.println("BACK");
                      if(result.getData()==null) {
-                         System.out.println("NULL intent");
                          return;
                      }
                       int code  = result.getResultCode();
@@ -69,14 +67,12 @@ public class TasksActivity extends AppCompatActivity {
                         boolean taskNameModified = result.getData().getBooleanExtra("taskNameModified",false);
                         if(result.getData().getBooleanExtra("remindingDateSet",false)){
                             if(task.getReminder()!=null) {
-                                System.out.println("remindingDateSet");
                                 pendingsViewModel.insertPending(new Pending(task.getId(), task.getName(),task.getReminder(), !task.isStatus()));
                             }
                         }
                         else if(remindingDateModified || statusModified || taskNameModified){
                             if(task.getReminder()!=null) {
                                 pendingsViewModel.updatePending(new Pending(task.getId(),task.getName(), task.getReminder(), !task.isStatus()));
-                                System.out.println("updating pending");
                             }
                         }
                     }
@@ -89,7 +85,6 @@ public class TasksActivity extends AppCompatActivity {
                             tasksViewModel.getMaxId(user.getId()).observe(TasksActivity.this, max -> {
                                 if (max != null && insert.get()) {
                                     Pending pending = new Pending(max, newTask.getName(), newTask.getReminder(), !newTask.isStatus());
-                                    System.out.println("inserting pending:" + pending);
                                     pendingsViewModel.insertPending(pending);
                                     insert.set(false);
                                 }
@@ -116,7 +111,6 @@ public class TasksActivity extends AppCompatActivity {
         addTask_button = findViewById(R.id.addTask_button);
         notificationSystem = NotificationSystem.getInstance(this);
         addTask_button.setOnClickListener(view -> {
-            System.out.println("button clicked");
             Intent intent = new Intent(this, Task_edit.class);
             intent.putExtra("user",user);
             intent.putExtra("target","create");
@@ -141,7 +135,6 @@ public class TasksActivity extends AppCompatActivity {
 
         pendingsViewModel.getAllPendings().observe(this, pendings -> {
             if(pendings!=null){
-                System.out.println("pendings:"+pendings);
                 notificationSystem.setPendingReflection(pendings);
             }
         });

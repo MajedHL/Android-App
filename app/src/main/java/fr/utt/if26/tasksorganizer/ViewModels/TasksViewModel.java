@@ -44,8 +44,6 @@ public class TasksViewModel extends AndroidViewModel {
 //    }
 
     public void insertTask(Task task) {
-        System.out.println("parentID: " + task.getParentTaskID());
-        System.out.println("ID: " + task.getId());
         tasksRepository.insertTask(task);
     }
 

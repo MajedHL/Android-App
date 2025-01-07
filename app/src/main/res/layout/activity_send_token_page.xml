@@ -4,12 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:orientation="vertical"
     tools:context=".Activities.SendTokenPage">
 
     <LinearLayout
-        android:layout_width="402dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="248dp"
         android:orientation="vertical"
@@ -21,6 +20,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5sp"
             android:orientation="horizontal">
 
             <TextView
@@ -53,6 +53,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="5sp"
             android:orientation="horizontal">
 
             <TextView
